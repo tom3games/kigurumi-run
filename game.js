@@ -1057,7 +1057,7 @@ function stepReveal(dt, rdt) {
     if (d <= 0.5 && R.t > 1.8 && rnd() < dt * 0.4) spawnSprite(starT, nx, 2.0, nz, { size: 0.22, vy: 0.8, life: 0.6 })
   })
   if (R.t > 1.0 && !R.cam) { R.cam = 1; setCamTarget(1, 1.25) }
-  if (R.t > 1.9 && !R.said1) { R.said1 = 1; say(R.line); sfx('giggle', { vol: 0.4 }); sfx('lose', { vol: 0.6 }) }
+  if (R.t > 1.9 && !R.said1) { R.said1 = 1; say(R.line); sfx('giggle', { vol: 0.12 }); sfx('lose', { vol: 0.6 }) }
   if (R.t > 3.6 && !R.said2) { R.said2 = 1; say(T().perfLine) }
   if (R.t > 3.4 && !R.shot) { R.shot = true; capturePhoto() }
   if (R.t > 4.9 && G.mode === 'reveal') showResult()
