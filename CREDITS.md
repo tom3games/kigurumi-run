@@ -24,3 +24,4 @@
 - snd/step2.mp3: 100 CC0 SFX #2 / rubberduck / CC0
 - snd/wobble.mp3: Wacky Wobblings / Fupi / CC0
 - assets/*.glb: Kenney Mini Characters / CC0
+- assets/perf-*.glb: Quaternius Ultimate Modular Men/Women (Casual_2, Worker, Casual, Formal) / CC0（アニメを絞り、質感を縮小して再パック）

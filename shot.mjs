@@ -10,7 +10,7 @@ const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceSc
 const p = await ctx.newPage(); const errs = []
 p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
 await p.goto(`http://localhost:${PORT}/?t=${Date.now()}`)
-await p.waitForFunction(() => window.__kgReady, null, { timeout: 20000 })
+try { await p.waitForFunction(() => window.__kgReady, null, { timeout: 20000 }) } catch (e) { console.log('ERRS', errs.join('\n')); process.exit(1) }
 await p.screenshot({ path: 'shots/s1-title.png' })
 await p.evaluate(() => { kg.pause(); kg.start(); kg.step(5) })
 await p.screenshot({ path: 'shots/s2-run0.png' })

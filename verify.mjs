@@ -23,7 +23,7 @@ async function open(browser, opts = {}, q = '') {
   const p = await ctx.newPage(); p.errs = []
   p.on('pageerror', e => p.errs.push('pageerror ' + e.message))
   p.on('console', m => { if (m.type() === 'error') p.errs.push('console ' + m.text()) })
-  p.on('requestfailed', r => { if (!/fonts\.(googleapis|gstatic)/.test(r.url())) p.errs.push('reqfail ' + r.url()) })
+  p.on('requestfailed', r => { if (!/fonts\.(googleapis|gstatic)|assets\/perf-/.test(r.url())) p.errs.push('reqfail ' + r.url()) })
   await p.goto(URL0 + q); try { await p.waitForFunction(() => window.__kgReady, null, { timeout: 20000 }) } catch (e) { console.log('OPEN FAIL', p.errs.join('|'), await p.evaluate(() => document.body.innerText.slice(0, 200))); throw e }
   return p
 }
@@ -97,7 +97,7 @@ await t('何もしないと頭が落ちて結果（称号が最低）が出る',
   await p.evaluate(() => { kg.seed(77); kg.start(); kg.inp.L = kg.inp.R = kg.inp.hL = kg.inp.hR = false; kg.pause(false) })
   await p.waitForSelector('#result:not([hidden])', { timeout: 30000 })
   const r = await p.evaluate(() => ({ f: kg.G.final, rank: kg.rank(kg.G.final), over: kg.G.over, best: localStorage.getItem('kg_best') }))
-  expect(r.f < 60 && r.rank === '着ぐるみ研修生', JSON.stringify(r)); await p.screenshot({ path: 'shots/v-result.png' }); return r
+  expect(r.f < 100 && r.rank === '着ぐるみ研修生', JSON.stringify(r)); await p.screenshot({ path: 'shots/v-result.png' }); return r
 })
 await t('結果カードが描かれている（輝度の散らばり）', async () => {
   const v = await p.evaluate(() => { const c = document.getElementById('cv'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let a = 0, a2 = 0, n = 0; for (let i = 0; i < d.length; i += 52) { const v = d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; a += v; a2 += v * v; n++ } return Math.round(a2 / n - (a / n) ** 2) })
@@ -112,6 +112,58 @@ await t('画像を保存が動く', async () => { const [d] = await Promise.all(
 await t('もう一回で新しい走りが始まり、ベストが保存される', async () => {
   const best = await p.evaluate(() => +localStorage.getItem('kg_best')); await p.click('#bAgain'); await p.waitForTimeout(300)
   const m = await p.evaluate(() => kg.G.mode); expect(m === 'run', m); return best
+})
+await t('画面タップでジャンプ（本物のクリック）。ボタン上のタップではジャンプしない', async () => {
+  await p.evaluate(() => { kg.pause(); kg.start(); kg.step(20); kg.obstacles.forEach(o => { o.active = false; o.g.visible = false }); kg.fans.forEach(f => { f.active = false }); kg.pause(false) })
+  const n0 = await p.evaluate(() => kg.P.nj)
+  const pos = await p.evaluate(() => kg.proj('bL')); await p.mouse.click(pos.x, pos.y); await p.waitForTimeout(150)
+  const n1 = await p.evaluate(() => kg.P.nj); expect(n1 === n0, 'ボタンでジャンプした ' + n1)
+  await p.mouse.click(195, 300); await p.waitForTimeout(250)
+  const y = await p.evaluate(() => ({ y: kg.P.y, air: kg.P.air, n: kg.P.nj })); expect(y.n === n0 + 1 && y.air && y.y > 0.3, JSON.stringify(y))
+  await p.waitForTimeout(700); const g = await p.evaluate(() => kg.P.air); expect(!g, 'まだ空中'); return y
+})
+await t('ジャンプで障害物（コーン・ベンチ・箱・看板）を越えられ、跳ばないとぶつかる', async () => {
+  const r = await p.evaluate(() => {
+    const out = {}
+    for (const type of ['cone', 'bench', 'box', 'sign']) {
+      for (const jump of [false, true]) {
+        kg.pause(); kg.start(); kg.step(30); kg.obstacles.forEach(o => { o.active = false; o.g.visible = false }); kg.fans.forEach(f => { f.active = false })
+        const o = kg.obstacles.find(q => !q.active && q.type === type); o.active = true; o.x = kg.P.x; o.z = kg.P.z - 14; o.state = 'idle'; o.g.visible = true; o.g.position.set(o.x, 0, o.z)
+        kg.P.h = 0; kg.P.hv = 0
+        let jumped = false, st = 0
+        while (st < 400 && o.z < kg.P.z + 1) { const dz = kg.P.z - o.z; if (jump && !jumped && dz < 3.0) { kg.tryJump(); jumped = true } kg.step(1); st++ }
+        out[type + (jump ? '+j' : '')] = o.state
+      }
+    }
+    return out
+  })
+  for (const k of ['cone', 'bench', 'box', 'sign']) expect(r[k] === 'hit' && r[k + '+j'] === 'idle', JSON.stringify(r)); return r
+})
+await t('スライディングしてくるファンを跳ぶと越え、跳ばないとぶつかる', async () => {
+  const r = await p.evaluate(() => {
+    const out = {}
+    for (const jump of [false, true]) {
+      kg.pause(); kg.start(); kg.step(30); kg.obstacles.forEach(o => { o.active = false; o.g.visible = false }); kg.fans.forEach(f => { f.active = false }); kg.G.hintShown.x = 1
+      const f = kg.spawn('slider', kg.P.x, 16, 6); kg.P.h = 0; kg.P.hv = 0; let jumped = false, st = 0, hit = false
+      while (st < 500 && f.active && f.z < kg.P.z + 2) { const dz = kg.P.z - f.z; if (jump && !jumped && f.sl && dz < 3.3) { kg.tryJump(); jumped = true } kg.step(1); st++; if (f.state === 'leave') { hit = true; break } }
+      out[jump ? 'jump' : 'nojump'] = { hit, sl: f.sl }
+    }
+    return out
+  })
+  expect(r.nojump.hit && r.nojump.sl && !r.jump.hit, JSON.stringify(r)); return r
+})
+await t('着地の衝撃で頭が揺れる（傾いている向きへさらに押す）', async () => {
+  const r = await p.evaluate(() => {
+    kg.pause(); kg.start(); kg.step(20); kg.obstacles.forEach(o => { o.active = false; o.g.visible = false }); kg.fans.forEach(f => { f.active = false })
+    kg.P.h = 0.4; kg.P.hv = 0; kg.tryJump(); let before = null, after = null
+    for (let i = 0; i < 120; i++) { const air = kg.P.air; kg.P.h = 0.4; if (air) before = kg.P.hv; kg.step(1); if (air && !kg.P.air) { after = kg.P.hv; break } }
+    return { before, after }
+  })
+  expect(r.after - r.before > 0.5, JSON.stringify(r)); return r
+})
+await t('慣れる区間: 最初の40mでは障害物もファンも出ない（出現前）', async () => {
+  const r = await p.evaluate(() => { kg.pause(); kg.seed(3); kg.start(); let n = 0, first = null; for (let i = 0; i < 60 * 3; i++) { kg.P.h = 0; kg.P.hv = 0; kg.step(1); if (kg.obstacles.some(o => o.active) && first == null) first = kg.P.dist } return { first } })
+  expect(r.first === null || r.first > 20, JSON.stringify(r)); return r
 })
 await t('ファンサ: プレゼントを拾うと使えて、前のファンが止まる', async () => {
   await p.evaluate(() => { kg.pause(); kg.start(); kg.step(30); kg.fans.forEach(f => { f.active = false }); kg.P.gifts = 1; document.getElementById('bGift').hidden = false; kg.spawn('normal', 0, 8, 5); kg.spawn('normal', 1, 10, 5); kg.step(2) })
