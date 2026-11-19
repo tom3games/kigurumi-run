@@ -8,3 +8,4 @@
 - 15:11 v2 着手。本人感想: 足が短い・ジャンプ・スライディング・質。方針: 中の人=Quaternius Modular(7頭身,pruneしたglb)+大きな頭、タップでジャンプ、障害物(コーン/箱/ベンチ/看板)、スライダーファン、慣れる区間
 - 15:26 v2 実装: 中の人=Quaternius Modular(カプセルで着ぐるみ体)、タップジャンプ、障害物4種、スライダー、地面/小物/影。bot調整中(human 396m/41s)
 - v2 完了前: verify 54/54、sim(human 474m/48s, slow 442m/46s, idle 9s)。公開へ
+- 15:40 v2 公開 https://tom3games.github.io/kigurumi-run/?v=2 live OK
