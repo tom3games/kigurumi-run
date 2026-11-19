@@ -4,3 +4,4 @@
 - 14:44 game.js 1000行・title/run/reveal の画面確認済み(shots/)。次: bot で難度調整→verify→og→公開
 - 14:50 verify 46/49(拡大止めCSS・og追加で解消予定)。bot: human中央値120m・idle5秒・expert1500m。og.png作成。次: ai_tells・iOSシミュ・公開
 - 14:52 iOSシミュ(iPhone17Pro Safari)でタイトル→走行→正体バレ→結果を通し確認。verify 49/49。次: 公開
+- 14:53 公開済 https://tom3games.github.io/kigurumi-run/?v=1 live.mjs OK
