@@ -1,0 +1,26 @@
+- snd/bgm.mp3: Catch me if you can! / poinl / CC0
+- snd/crowd.mp3: Crowd Shouting/Speaking Ambience / StarNinjas / CC0
+- snd/street.mp3: 上の41〜65秒（静かな通り・車が1台通る）を1.5秒の重ね合わせで継ぎ目なしのループにしたもの（22.5秒・16kHz・WAV） / cori / Public domain
+- snd/sq1.mp3: Squeak toy sounds / bart / CC0
+- snd/sq2.mp3: Squeak toy sounds / bart / CC0
+- snd/sq3.mp3: Squeak toy sounds / bart / CC0
+- snd/sq4.mp3: Squeak toy sounds / bart / CC0
+- snd/thwack1.mp3: Thwack Sounds / AntumDeluge / CC0
+- snd/thwack2.mp3: Thwack Sounds / AntumDeluge / CC0
+- snd/pop1.mp3: 3 Pop Sounds / wubitog / CC0
+- snd/pop2.mp3: 3 Pop Sounds / wubitog / CC0
+- snd/pop3.mp3: 3 Pop Sounds / wubitog / CC0
+- snd/bonk1.mp3: 75 CC0 breaking / falling / hit sfx / rubberduck / CC0
+- snd/bonk2.mp3: 75 CC0 breaking / falling / hit sfx / rubberduck / CC0
+- snd/bonk3.mp3: 75 CC0 breaking / falling / hit sfx / rubberduck / CC0
+- snd/grunt1.mp3: Little Grunts / crueltyinc / CC0
+- snd/grunt2.mp3: Little Grunts / crueltyinc / CC0
+- snd/grunt3.mp3: Little Grunts / crueltyinc / CC0
+- snd/giggle.mp3: Group giggling / Nocturnal_Vanguard / CC0
+- snd/applause.mp3: Applause in a large hall or church / eXpl0it3r / CC0
+- snd/lose.mp3: 85 Short music jingles / Kenney / CC0
+- snd/start.mp3: 85 Short music jingles / Kenney / CC0
+- snd/step1.mp3: 100 CC0 SFX #2 / rubberduck / CC0
+- snd/step2.mp3: 100 CC0 SFX #2 / rubberduck / CC0
+- snd/wobble.mp3: Wacky Wobblings / Fupi / CC0
+- assets/*.glb: Kenney Mini Characters / CC0

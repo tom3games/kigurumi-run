@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>着ぐるみ、頭が取れたら終わり｜ゆるキャラの中の人が逃げるバカゲー</title>
+<meta name="description" content="ゆるキャラの中の人になって、熱狂的なファンの群れから逃げる。走るほど頭がずれる。直しながら逃げないと、頭がぽろんと取れて正体バレ。スマホのブラウザで遊べる無料の着ぐるみゲーム。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="着ぐるみ、頭が取れたら終わり">
+<meta property="og:description" content="ゆるキャラの中の人になって、熱狂的なファンから逃げる。頭が取れたら正体バレで終わり。">
+<meta property="og:image" content="https://tom3games.github.io/kigurumi-run/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="https://tom3games.github.io/kigurumi-run/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#bfe3f3">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script>(function(){function add(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap';document.head.appendChild(l)}if(document.readyState==='complete')add();else addEventListener('load',add)})()</script>
+<link rel="stylesheet" href="style.css?v=1">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body>
+<div id="view"></div>
+<div id="vig"></div>
+<div id="flash"></div>
+
+<section id="loading" class="screen">
+  <div class="ld">
+    <svg class="ld-head" viewBox="0 0 120 120" aria-hidden="true">
+      <path d="M60 14 C52 4 40 6 38 16 C48 14 54 18 60 14Z" fill="#6bbf59"/>
+      <ellipse cx="60" cy="68" rx="46" ry="44" fill="#fbf3e6" stroke="#22304a" stroke-width="4"/>
+      <ellipse cx="42" cy="66" rx="7" ry="10" fill="#22304a"/><ellipse cx="78" cy="66" rx="7" ry="10" fill="#22304a"/>
+      <circle cx="44" cy="62" r="2.6" fill="#fff"/><circle cx="80" cy="62" r="2.6" fill="#fff"/>
+      <ellipse cx="30" cy="82" rx="8" ry="5" fill="#f4a3b4"/><ellipse cx="90" cy="82" rx="8" ry="5" fill="#f4a3b4"/>
+      <path d="M52 84 Q60 92 68 84" fill="none" stroke="#22304a" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <p class="ld-txt" id="ldTxt">着ぐるみに着替え中</p>
+    <div class="ld-bar"><i id="ldFill"></i></div>
+  </div>
+</section>
+
+<main id="hud" hidden>
+  <div id="bib"><span id="bibN">0</span><small>m</small></div>
+  <div id="topR">
+    <button id="bPause" class="mini" aria-label="pause"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg></button>
+    <button id="bMute" class="mini" aria-label="sound"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path class="wave" d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <div id="hint" hidden></div>
+  <div id="pad">
+    <div class="grp" id="gRun">
+      <button id="bL" class="pb run" aria-label="left"><svg viewBox="0 0 64 64"><path d="M44 30 C44 18 34 14 26 18 L10 28 C6 30 6 36 11 37 L18 38 C20 46 28 52 38 50 C46 48 48 40 44 30Z" fill="#fff" stroke="#22304a" stroke-width="3.5" stroke-linejoin="round"/><path d="M36 30 L24 30 M29 24 L23 30 L29 36" fill="none" stroke="#d93a2b" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button id="bR" class="pb run" aria-label="right"><svg viewBox="0 0 64 64" style="transform:scaleX(-1)"><path d="M44 30 C44 18 34 14 26 18 L10 28 C6 30 6 36 11 37 L18 38 C20 46 28 52 38 50 C46 48 48 40 44 30Z" fill="#fff" stroke="#22304a" stroke-width="3.5" stroke-linejoin="round"/><path d="M36 30 L24 30 M29 24 L23 30 L29 36" fill="none" stroke="#d93a2b" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="lb" id="lbRun">にげる</span>
+    </div>
+    <div class="grp" id="gHead">
+      <button id="hL" class="pb head" aria-label="head left"><svg viewBox="0 0 64 64"><g transform="rotate(-18 32 34)"><path d="M32 8 C28 2 21 3 20 9 C26 8 29 10 32 8Z" fill="#6bbf59"/><ellipse cx="32" cy="36" rx="24" ry="23" fill="#fbf3e6" stroke="#22304a" stroke-width="3.5"/><ellipse cx="22" cy="36" rx="3.6" ry="5.2" fill="#22304a"/><ellipse cx="42" cy="36" rx="3.6" ry="5.2" fill="#22304a"/></g><path d="M20 58 L8 58 M13 53 L8 58 L13 63" fill="none" stroke="#3949ab" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button id="hR" class="pb head" aria-label="head right"><svg viewBox="0 0 64 64"><g transform="rotate(18 32 34)"><path d="M32 8 C28 2 21 3 20 9 C26 8 29 10 32 8Z" fill="#6bbf59"/><ellipse cx="32" cy="36" rx="24" ry="23" fill="#fbf3e6" stroke="#22304a" stroke-width="3.5"/><ellipse cx="22" cy="36" rx="3.6" ry="5.2" fill="#22304a"/><ellipse cx="42" cy="36" rx="3.6" ry="5.2" fill="#22304a"/></g><path d="M44 58 L56 58 M51 53 L56 58 L51 63" fill="none" stroke="#3949ab" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="lb" id="lbHead">頭をおさえる</span>
+    </div>
+    <button id="bGift" class="gift" aria-label="fan service" hidden><svg viewBox="0 0 64 64"><path d="M32 54 C10 40 8 24 18 17 C25 13 30 17 32 22 C34 17 39 13 46 17 C56 24 54 40 32 54Z" fill="#f4a3b4" stroke="#22304a" stroke-width="3.5" stroke-linejoin="round"/><path d="M20 22 C22 20 25 20 26 22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg><b id="giftN">0</b><span class="lb" id="lbGift">ファンサ</span></button>
+  </div>
+</main>
+
+<div id="bubble" hidden></div>
+
+<section id="title" class="screen" hidden>
+  <div class="poster">
+    <div class="band">ゆるキャラ 脱出劇</div>
+    <h1><span id="tA">着ぐるみ、</span><span id="tB">頭が取れたら終わり</span></h1>
+    <p id="tSub" class="sub">ゆるキャラの中の人は、今日も逃げる</p>
+  </div>
+  <div class="tbot">
+    <button id="bStart" class="start">はじめる</button>
+    <div class="trow"><button id="bHow" class="ghost">あそびかた</button><button id="bLang" class="ghost sm">EN</button></div>
+    <p id="tBest" class="best"></p>
+  </div>
+</section>
+
+<section id="how" class="screen" hidden>
+  <div class="card">
+    <h2 id="hT">あそびかた</h2>
+    <ol><li id="h1"></li><li id="h2"></li><li id="h3"></li><li id="h4"></li><li id="h5"></li></ol>
+    <p class="cr" id="hCr"></p>
+    <button id="bHowClose" class="start sm2">閉じる</button>
+  </div>
+</section>
+
+<section id="pauseS" class="screen" hidden>
+  <div class="card c2"><h2 id="pT">一時停止</h2><button id="bResume" class="start sm2">つづける</button></div>
+</section>
+
+<section id="result" class="screen" hidden>
+  <div class="tab">
+    <div class="photo"><canvas id="cv" width="640" height="560"></canvas></div>
+    <div class="acts">
+      <button id="bAgain" class="start sm2">もう一回</button>
+      <div class="trow"><button id="bShare" class="ghost">Xでポスト</button><button id="bSave" class="ghost">画像を保存</button></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var opt={passive:false};
+  ['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()},opt)});
+  document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},opt);
+  var last=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-last<300&&!(e.target.closest&&e.target.closest('button,a')))e.preventDefault();last=n},opt);
+  document.addEventListener('dblclick',function(e){e.preventDefault()},opt);
+  window.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault()},opt);
+  window.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&['+','-','=','0',';'].indexOf(e.key)>=0)e.preventDefault()});
+})();
+(function(){
+  var errs=[];
+  window.addEventListener('error',function(e){errs.push((e.message||'error')+' @'+(e.filename||'')+':'+(e.lineno||''))});
+  window.addEventListener('unhandledrejection',function(e){errs.push('reject: '+(e.reason&&e.reason.message||e.reason))});
+  setTimeout(function(){
+    if(window.__kgReady||(window.__jsUp&&!errs.length)) return;
+    var d=document.createElement('div');d.id='boot-err';
+    d.textContent='起動できませんでした / failed to start\n'+(errs.join('\n')||'(no error captured)')+'\n'+navigator.userAgent;
+    document.body.appendChild(d);
+  },12000);
+})();
+</script>
+<script src="data.js?v=1"></script>
+<script src="sfx.js?v=1"></script>
+<script src="support.js?v=1" data-ja="大福" data-en="a daifuku"></script>
+<script type="module" src="game.js?v=1"></script>
+</body>
+</html>
